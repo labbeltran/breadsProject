@@ -11,13 +11,23 @@ baker.get('/data/seed', (req, res) => {
 })
 
 // Index: 
-baker.get('/', (req, res) => {
-    Baker.find()
-        .populate(`breads`)
-        .then(foundBakers => {
-            res.send(foundBakers)
-        })
-}) 
+// baker.get('/', (req, res) => {
+//     Baker.find()
+//         .populate(`breads`)
+//         .then(foundBakers => {
+//             res.send(foundBakers)
+//         })
+// }) 
+
+baker.get(`/`, async (req, res)=>{
+    try{
+        const foundBakers = Baker.find().populate(`breads`)
+        res.send(foundBakers)
+    }
+    catch(error){
+        res.status().send(error)
+    }
+})
 
 // Show: 
 baker.get('/:id', (req, res) => {
@@ -28,6 +38,14 @@ baker.get('/:id', (req, res) => {
                 baker: foundBaker
             })
         })
+})
+
+// delete
+baker.delete('/:id', (req, res) => {
+    Baker.findByIdAndDelete(req.params.id) 
+      .then(deletedBaker => { 
+        res.status(303).redirect('/breads')
+      })
 })
 
 
